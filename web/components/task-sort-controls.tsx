@@ -10,15 +10,50 @@ import {
 } from "@/lib/task-list-query";
 
 const SORT_BY_OPTIONS: { value: TaskSortBy; label: string }[] = [
-  { value: "created", label: "Дата додавання" },
-  { value: "deadline", label: "Дедлайн" },
-  { value: "priority", label: "Пріоритет" },
+  { value: "created", label: "Сорт: створено" },
+  { value: "deadline", label: "Сорт: дедлайн" },
+  { value: "priority", label: "Сорт: пріоритет" },
 ];
 
-const SORT_ORDER_OPTIONS: { value: TaskSortOrder; label: string }[] = [
-  { value: "asc", label: "Зростання" },
-  { value: "desc", label: "Спадання" },
-];
+function ChevronUpIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="m18 15-6-6-6 6" />
+    </svg>
+  );
+}
+
+function ChevronDownIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
 
 export function TaskSortControls({
   status,
@@ -57,18 +92,23 @@ export function TaskSortControls({
         ? "Зростання: низький → середній → високий. Спадання: високий → середній → низький."
         : "Зростання: старіші задачі першими. Спадання: новіші першими.";
 
+  const orderBtnBase =
+    "inline-flex h-full min-h-0 min-w-[2.25rem] items-center justify-center rounded-md px-2 outline-none transition focus-visible:ring-2 focus-visible:ring-zinc-400 disabled:cursor-not-allowed disabled:opacity-60 dark:focus-visible:ring-zinc-500";
+  const orderBtnOn =
+    `${orderBtnBase} bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-50`;
+  const orderBtnOff =
+    `${orderBtnBase} text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100`;
+
   return (
     <div
-      className={`flex flex-col gap-2 rounded-xl border border-zinc-200/90 bg-white/70 p-3 shadow-sm sm:flex-row sm:flex-wrap sm:items-end dark:border-zinc-700 dark:bg-zinc-900/50 ${pending ? "opacity-70" : ""}`}
+      className={`flex min-w-0 flex-1 flex-col gap-3 self-stretch rounded-xl border border-zinc-200/90 bg-white/70 p-1 shadow-sm sm:min-w-[min(100%,18rem)] sm:flex-row sm:flex-wrap sm:items-center sm:gap-2 sm:px-2 dark:border-zinc-700 dark:bg-zinc-900/50 ${pending ? "opacity-70" : ""}`}
       role="group"
       aria-label="Сортування списку задач"
     >
-      <label className="flex min-w-0 flex-1 flex-col gap-1 sm:max-w-[11rem]">
-        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-          Сортувати за
-        </span>
+      <label className="min-w-0 flex-1 sm:min-w-[12rem]">
+        <span className="sr-only">Сортувати за</span>
         <select
-          className="rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+          className="h-10 w-full rounded-lg border border-zinc-200/90 bg-white pl-3 pr-12 text-sm font-medium text-zinc-900 shadow-sm outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
           value={sortBy}
           title={sortByTitle}
           onChange={(e) => onSortByChange(e.target.value as TaskSortBy)}
@@ -80,23 +120,36 @@ export function TaskSortControls({
           ))}
         </select>
       </label>
-      <label className="flex min-w-0 flex-1 flex-col gap-1 sm:max-w-[10rem]">
-        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-          Порядок
-        </span>
-        <select
-          className="rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-          value={sortOrder}
-          title={sortByTitle}
-          onChange={(e) => onSortOrderChange(e.target.value as TaskSortOrder)}
+      <div
+        className="inline-flex h-10 w-fit shrink-0 items-center rounded-lg border border-zinc-200/90 bg-zinc-100/80 p-0.5 shadow-inner dark:border-zinc-700 dark:bg-zinc-900/60"
+        role="radiogroup"
+        aria-label="Порядок: зростання або спадання"
+      >
+        <button
+          type="button"
+          role="radio"
+          aria-checked={sortOrder === "asc"}
+          title="Зростання"
+          aria-label="Зростання"
+          disabled={pending}
+          onClick={() => onSortOrderChange("asc")}
+          className={sortOrder === "asc" ? orderBtnOn : orderBtnOff}
         >
-          {SORT_ORDER_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </label>
+          <ChevronUpIcon />
+        </button>
+        <button
+          type="button"
+          role="radio"
+          aria-checked={sortOrder === "desc"}
+          title="Спадання"
+          aria-label="Спадання"
+          disabled={pending}
+          onClick={() => onSortOrderChange("desc")}
+          className={sortOrder === "desc" ? orderBtnOn : orderBtnOff}
+        >
+          <ChevronDownIcon />
+        </button>
+      </div>
     </div>
   );
 }

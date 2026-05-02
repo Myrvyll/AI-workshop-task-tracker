@@ -182,7 +182,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <h2 className="text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
               Список
             </h2>
-            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-stretch sm:justify-between">
               <TaskStatusFilter
                 current={statusFilter}
                 sortBy={sortBy}
