@@ -12,8 +12,8 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="z-20 shrink-0 border-b border-zinc-200/90 bg-white/95 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/95 dark:shadow-none md:flex md:w-56 md:flex-col md:border-b-0 md:border-r md:shadow-[4px_0_24px_-12px_rgba(0,0,0,0.08)] md:dark:shadow-[4px_0_32px_-16px_rgba(0,0,0,0.45)]">
-      <div className="flex flex-col gap-4 px-3 py-4 md:px-4 md:py-6">
+    <aside className="z-20 min-h-0 shrink-0 border-b border-zinc-200/90 bg-white/95 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/95 dark:shadow-none md:flex md:h-full md:w-56 md:flex-col md:overflow-y-auto md:overscroll-y-contain md:border-b-0 md:border-r md:shadow-[4px_0_24px_-12px_rgba(0,0,0,0.08)] md:dark:shadow-[4px_0_32px_-16px_rgba(0,0,0,0.45)]">
+      <div className="flex flex-col gap-4 px-3 py-4 md:min-h-0 md:px-4 md:py-6">
         <div className="hidden md:block">
           <p className="text-xs font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
             Task tracker

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { deleteTask, toggleTaskDone } from "@/app/actions";
 import { TaskEditBlock } from "@/components/task-edit-block";
 import type { TagForTaskPicker } from "@/lib/tag-tree";
@@ -27,10 +30,15 @@ export function TaskCard({
   assignableTags: TagForTaskPicker[];
 }) {
   const done = task.done;
+  const [editing, setEditing] = useState(false);
+  const [pending, setPending] = useState(false);
+  const formId = `task-edit-${task.id}`;
 
   return (
     <article
-      className={`rounded-2xl border p-4 shadow-sm transition hover:ring-1 hover:ring-zinc-200/80 dark:hover:ring-zinc-700/80 ${
+      className={`relative rounded-2xl border p-4 shadow-sm transition hover:ring-1 hover:ring-zinc-200/80 dark:hover:ring-zinc-700/80 ${
+        editing ? "pb-14" : ""
+      } ${
         done
           ? "border-zinc-100/90 bg-zinc-50/90 opacity-85 dark:border-zinc-800 dark:bg-zinc-900/50"
           : "border-zinc-200/90 bg-white/95 dark:border-zinc-700/90 dark:bg-zinc-900/80"
@@ -46,6 +54,11 @@ export function TaskCard({
             task={task}
             done={done}
             assignableTags={assignableTags}
+            editing={editing}
+            onEditingChange={setEditing}
+            formId={formId}
+            pending={pending}
+            setPending={setPending}
           />
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
@@ -88,6 +101,16 @@ export function TaskCard({
           </form>
         </div>
       </div>
+      {editing ? (
+        <button
+          type="submit"
+          form={formId}
+          disabled={pending}
+          className="absolute bottom-4 right-4 z-10 rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+        >
+          {pending ? "Зберігаю…" : "Зберегти"}
+        </button>
+      ) : null}
     </article>
   );
 }

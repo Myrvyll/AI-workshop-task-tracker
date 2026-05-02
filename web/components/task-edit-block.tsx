@@ -63,17 +63,31 @@ export function TaskEditBlock({
   task,
   done,
   assignableTags,
+  editing,
+  onEditingChange,
+  formId,
+  pending,
+  setPending,
 }: {
   task: TaskWithTags;
   done: boolean;
   assignableTags: TagForTaskPicker[];
+  editing: boolean;
+  onEditingChange: (next: boolean) => void;
+  formId: string;
+  pending: boolean;
+  setPending: (next: boolean) => void;
 }) {
   const router = useRouter();
-  const [editing, setEditing] = useState(false);
   const [clientError, setClientError] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
   const deadlineDate = parseDeadline(task.deadline);
+
+  function startEditing() {
+    setClientError(null);
+    setServerError(null);
+    onEditingChange(true);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -124,7 +138,7 @@ export function TaskEditBlock({
         setServerError(result.error);
         return;
       }
-      setEditing(false);
+      onEditingChange(false);
       router.refresh();
     } finally {
       setPending(false);
@@ -134,28 +148,25 @@ export function TaskEditBlock({
   if (!editing) {
     return (
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-end gap-2">
-          <h2
-            className={`min-w-0 flex-1 text-base font-semibold text-zinc-900 dark:text-zinc-50 ${
+        <h2 className="min-w-0 text-base font-semibold text-zinc-900 dark:text-zinc-50">
+          <button
+            type="button"
+            onClick={startEditing}
+            className={`w-full cursor-pointer rounded-md px-0 py-0.5 text-left font-semibold text-inherit transition hover:bg-zinc-100/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:hover:bg-zinc-800/60 dark:focus-visible:ring-zinc-500 ${
               done ? "line-through decoration-zinc-400" : ""
             }`}
           >
             {task.title}
-          </h2>
+          </button>
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           <button
             type="button"
-            onClick={() => {
-              setClientError(null);
-              setServerError(null);
-              setEditing(true);
-            }}
-            className="shrink-0 rounded-lg border border-zinc-200 bg-white px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+            onClick={startEditing}
+            className="cursor-pointer rounded-md px-0 py-0.5 text-left text-inherit transition hover:bg-zinc-100/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:hover:bg-zinc-800/60 dark:focus-visible:ring-zinc-500"
           >
-            Редагувати
+            {formatDeadline(deadlineDate)}
           </button>
-        </div>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          {formatDeadline(deadlineDate)}
         </p>
         {task.taskTags.length > 0 ? (
           <div className="mt-2 flex flex-wrap gap-1.5">
@@ -180,7 +191,7 @@ export function TaskEditBlock({
 
   return (
     <div className="min-w-0 flex-1">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-3">
         <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
           Назва
           <input
@@ -263,19 +274,12 @@ export function TaskEditBlock({
 
         <div className="flex flex-wrap gap-2">
           <button
-            type="submit"
-            disabled={pending}
-            className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-          >
-            {pending ? "Зберігаю…" : "Зберегти"}
-          </button>
-          <button
             type="button"
             disabled={pending}
             onClick={() => {
               setClientError(null);
               setServerError(null);
-              setEditing(false);
+              onEditingChange(false);
             }}
             className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
           >
