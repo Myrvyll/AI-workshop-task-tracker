@@ -1,0 +1,51 @@
+---
+description: Workshop — персональний AI task tracker (Next.js, Prisma, Neon, Vercel)
+alwaysApply: true
+---
+
+# Проєкт: персональний AI task tracker
+
+## Agent language
+
+- In this repository, **use English only** when talking to the user in chat, and for commit messages, PR text, and code comments you add—unless the user explicitly asks for another language. (Product UI copy may stay Ukrainian if the app targets Ukrainian users.)
+
+Основна ідея: **не форма з полями**, а **одне текстове поле** — користувач пише природною мовою (як у Slack); AI парсить назву, дедлайн, пріоритет. Застосунок реальний, деплой на **Vercel**, БД **Neon Postgres** через **Prisma**, LLM **OpenAI GPT-4o mini** (`OPENAI_API_KEY`).
+
+Код застосунку: каталог **`web/`** (Next.js App Router, Tailwind).
+
+## Обов’язковий MVP
+
+- Додати задачу з одного текстового поля; AI повертає структуровані поля; зберігати **`rawInput`** і розпарсені поля.
+- Список задач картками: назва, дедлайн, пріоритет (🔴 high / 🟡 medium / 🟢 low).
+- Позначити виконаним (чекбокс або кнопка); виконані — перекреслені або приховані (узгодити з UI).
+- Персистентність: Prisma + Postgres; після перезавантаження задачі лишаються.
+- Прод: Vercel + ті самі змінні середовища, що й локально (`DATABASE_URL`, `OPENAI_API_KEY`).
+
+## Схема Prisma (`Task`)
+
+- `id` cuid, `rawInput` string, `title` string, `priority` string (`high` | `medium` | `low`), `deadline` DateTime?, `done` Boolean default false, `createdAt` DateTime default now().
+
+## Контракт парсингу (AI → застосунок)
+
+- Відповідь **лише валідний JSON**, без markdown і пояснень: `{ "title", "priority", "deadline" }` (`deadline` ISO 8601 або null якщо невідомо).
+- Якщо парсинг зламався — покладатися на `rawInput` як fallback.
+
+## Додаткові фічі (після MVP)
+
+**Легкі:** видалити задачу; фільтр активні/виконані; сортування за дедлайном або пріоритетом; empty state («Все зроблено 🎉»).
+
+**Середні:** «Що робити зараз?» — AI топ-3 на сьогодні з поясненням; редагування назви по кліку; прострочені дедлайни підсвітка.
+
+**Складні (якщо все інше готово):** AI-теги (робота / особисте / навчання); «Що на сьогодні?» дайджест; коментар/нотатка в картці.
+
+## Обмеження скоупу
+
+- Спочатку **MVP задеплоєний**, потім додаткові фічі. **Без multi-user / авторизації** до готового MVP, якщо не попросили явно.
+
+## Типові ризики
+
+- Не-JSON від моделі — жорсткий системний промпт + валідація/ретрай.
+- `DATABASE_URL` / `OPENAI_API_KEY` на Vercel — Environment Variables у проєкті Vercel.
+- Prisma: `provider = "postgresql"`, однаковий `DATABASE_URL` локально і в проді.
+
+Під час роботи в цьому репозиторії **пріоритезуй цей продукт і стек**; не підміняй вимоги воркшопу іншими підходами без узгодження з користувачем.
