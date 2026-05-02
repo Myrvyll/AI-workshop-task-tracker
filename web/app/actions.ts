@@ -56,3 +56,12 @@ export async function toggleTaskDone(formData: FormData) {
 
   revalidatePath("/");
 }
+
+export async function deleteTask(formData: FormData) {
+  const id = formData.get("id")?.toString();
+  if (!id) return;
+
+  await getPrisma().task.deleteMany({ where: { id } });
+
+  revalidatePath("/");
+}

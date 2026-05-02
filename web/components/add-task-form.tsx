@@ -21,7 +21,7 @@ export function AddTaskForm() {
         required
         disabled={pending}
         placeholder="Наприклад: завтра написати Славі про відео до обіду, терміново"
-        className="w-full resize-y rounded-xl border border-zinc-200 bg-white px-4 py-3 text-base text-zinc-900 shadow-sm outline-none ring-zinc-400 placeholder:text-zinc-400 focus:ring-2 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+        className="max-h-48 min-h-[4.5rem] w-full resize-y rounded-xl border border-zinc-200 bg-white px-4 py-3 text-base text-zinc-900 shadow-sm outline-none ring-zinc-400 placeholder:text-zinc-400 focus:ring-2 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500"
       />
       {state?.error ? (
         <p className="text-sm text-red-600 dark:text-red-400" role="alert">
