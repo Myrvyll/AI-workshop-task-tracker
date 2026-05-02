@@ -10,9 +10,9 @@ import {
 } from "@/lib/task-list-query";
 
 const SORT_BY_OPTIONS: { value: TaskSortBy; label: string }[] = [
-  { value: "created", label: "Сорт: створено" },
-  { value: "deadline", label: "Сорт: дедлайн" },
-  { value: "priority", label: "Сорт: пріоритет" },
+  { value: "created", label: "Сортування: створено" },
+  { value: "deadline", label: "Сортування: дедлайн" },
+  { value: "priority", label: "Сортування: пріоритет" },
 ];
 
 function ChevronUpIcon({ className }: { className?: string }) {
