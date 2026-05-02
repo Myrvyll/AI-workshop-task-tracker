@@ -7,6 +7,14 @@ const globalForPrisma = globalThis as unknown as {
   pool: Pool | undefined;
 };
 
+/**
+ * After schema changes, `next dev` can keep a cached `PrismaClient` on `globalThis` that was built
+ * before new models existed — then `getPrisma().tag` is undefined and `.findMany` throws.
+ */
+function prismaClientHasCurrentModels(client: PrismaClient): boolean {
+  return typeof (client as { tag?: { findMany?: unknown } }).tag?.findMany === "function";
+}
+
 /** Avoids pg's sslmode=require deprecation warning (treated as verify-full today). */
 function normalizeDatabaseUrl(url: string): string {
   return url.replace(
@@ -33,8 +41,13 @@ function createPrismaClient() {
 }
 
 export function getPrisma(): PrismaClient {
-  if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = createPrismaClient();
+  const cached = globalForPrisma.prisma;
+  if (cached && prismaClientHasCurrentModels(cached)) {
+    return cached;
   }
+  if (cached) {
+    void cached.$disconnect().catch(() => {});
+  }
+  globalForPrisma.prisma = createPrismaClient();
   return globalForPrisma.prisma;
 }

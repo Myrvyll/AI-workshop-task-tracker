@@ -1,31 +1,38 @@
 import Link from "next/link";
+import {
+  type TaskSortBy,
+  type TaskSortOrder,
+  type TaskStatusFilterValue,
+  taskListHref,
+} from "@/lib/task-list-query";
 
-export type TaskStatusFilterValue = "all" | "active" | "done";
+export type { TaskStatusFilterValue } from "@/lib/task-list-query";
 
 const OPTIONS: {
   value: TaskStatusFilterValue;
   label: string;
-  href: string;
 }[] = [
-  { value: "all", label: "Усі", href: "/" },
-  { value: "active", label: "Активні", href: "/?status=active" },
-  { value: "done", label: "Виконані", href: "/?status=done" },
+  { value: "all", label: "Усі" },
+  { value: "active", label: "Активні" },
+  { value: "done", label: "Виконані" },
 ];
 
-export function parseTaskStatusFilter(sp: {
-  status?: string | string[];
-}): TaskStatusFilterValue {
-  const raw = sp.status;
-  const v = Array.isArray(raw) ? raw[0] : raw;
-  if (v === "active" || v === "done") return v;
-  return "all";
-}
+export { parseTaskStatusFilter } from "@/lib/task-list-query";
 
-export function TaskStatusFilter({ current }: { current: TaskStatusFilterValue }) {
+export function TaskStatusFilter({
+  current,
+  sortBy,
+  sortOrder,
+}: {
+  current: TaskStatusFilterValue;
+  sortBy: TaskSortBy;
+  sortOrder: TaskSortOrder;
+}) {
   return (
     <div className="flex flex-wrap gap-2" role="tablist" aria-label="Фільтр за статусом">
-      {OPTIONS.map(({ value, label, href }) => {
+      {OPTIONS.map(({ value, label }) => {
         const selected = current === value;
+        const href = taskListHref({ status: value, sortBy, sortOrder });
         return (
           <Link
             key={value}

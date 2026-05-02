@@ -1,5 +1,7 @@
 import { deleteTask, toggleTaskDone } from "@/app/actions";
-import type { Task } from "@/app/generated/prisma/client";
+import type { Tag } from "@/app/generated/prisma/client";
+import { TaskEditBlock } from "@/components/task-edit-block";
+import type { TaskWithTags } from "@/lib/task-include";
 
 function priorityEmoji(priority: string) {
   if (priority === "high") return "🔴";
@@ -7,15 +9,23 @@ function priorityEmoji(priority: string) {
   return "🟡";
 }
 
-function formatDeadline(d: Date | null) {
-  if (!d) return "без дедлайну";
-  return new Intl.DateTimeFormat("uk-UA", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(d);
+function deadlineStableKey(d: TaskWithTags["deadline"]): string {
+  if (d == null) return "";
+  if (d instanceof Date) return d.toISOString();
+  return new Date(d).toISOString();
 }
 
-export function TaskCard({ task }: { task: Task }) {
+function taskTagsStableKey(task: TaskWithTags): string {
+  return task.taskTags.map((t) => t.tagId).sort().join(",");
+}
+
+export function TaskCard({
+  task,
+  assignableTags,
+}: {
+  task: TaskWithTags;
+  assignableTags: Pick<Tag, "id" | "name" | "slug">[];
+}) {
   const done = task.done;
 
   return (
@@ -27,27 +37,16 @@ export function TaskCard({ task }: { task: Task }) {
       }`}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-lg" title={task.priority}>
-              {priorityEmoji(task.priority)}
-            </span>
-            <h2
-              className={`text-base font-semibold text-zinc-900 dark:text-zinc-50 ${
-                done ? "line-through decoration-zinc-400" : ""
-              }`}
-            >
-              {task.title}
-            </h2>
-          </div>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            {formatDeadline(task.deadline)}
-          </p>
-          {task.rawInput !== task.title ? (
-            <p className="mt-2 line-clamp-2 text-xs text-zinc-400 dark:text-zinc-500">
-              Оригінал: {task.rawInput}
-            </p>
-          ) : null}
+        <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2">
+          <span className="shrink-0 text-lg leading-7" title={task.priority}>
+            {priorityEmoji(task.priority)}
+          </span>
+          <TaskEditBlock
+            key={`${task.id}-${task.title}-${deadlineStableKey(task.deadline)}-${taskTagsStableKey(task)}`}
+            task={task}
+            done={done}
+            assignableTags={assignableTags}
+          />
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
           <form action={toggleTaskDone}>

@@ -15,4 +15,29 @@ model Task {
   deadline  DateTime?
   done      Boolean   @default(false)
   createdAt DateTime  @default(now())
+  taskTags  TaskTag[]
+}
+
+/// Life-area or sub-category. `parentId` null = top level (e.g. work); children split the area (e.g. 1-1, ideas).
+model Tag {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  name      String
+  parentId  String?
+  sortOrder Int     @default(0)
+  parent    Tag?    @relation("TagTree", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  children  Tag[]   @relation("TagTree")
+  taskTags  TaskTag[]
+
+  @@index([parentId])
+}
+
+model TaskTag {
+  taskId String
+  tagId  String
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([taskId, tagId])
+  @@index([tagId])
 }
