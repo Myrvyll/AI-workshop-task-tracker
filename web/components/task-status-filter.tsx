@@ -29,7 +29,11 @@ export function TaskStatusFilter({
   sortOrder: TaskSortOrder;
 }) {
   return (
-    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Фільтр за статусом">
+    <div
+      className="inline-flex w-fit max-w-full flex-wrap rounded-xl border border-zinc-200/90 bg-zinc-100/80 p-1 shadow-inner dark:border-zinc-700 dark:bg-zinc-900/60"
+      role="tablist"
+      aria-label="Фільтр за статусом"
+    >
       {OPTIONS.map(({ value, label }) => {
         const selected = current === value;
         const href = taskListHref({ status: value, sortBy, sortOrder });
@@ -43,8 +47,8 @@ export function TaskStatusFilter({
             aria-selected={selected}
             className={
               selected
-                ? "rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
-                : "rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                ? "rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-50"
+                : "rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             }
           >
             {label}

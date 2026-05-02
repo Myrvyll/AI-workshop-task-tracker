@@ -140,7 +140,7 @@ export default async function Home({ searchParams }: HomeProps) {
     };
 
     return (
-      <div className="mx-auto flex min-h-full max-w-2xl flex-col gap-4 px-4 py-16">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-16">
         <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Task tracker</h1>
         <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
           <p className="font-medium text-amber-950 dark:text-amber-50">Помилка бази даних</p>
@@ -161,22 +161,26 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <>
-      <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col gap-10 px-4 py-10 pb-60">
-        <header className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-10 pb-60">
+        <header className="space-y-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
             Task tracker
+          </p>
+          <div className="h-px max-w-xs bg-gradient-to-r from-zinc-300 to-transparent dark:from-zinc-600" />
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 md:text-3xl">
+            Задачі
           </h1>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Одне поле — пиши як думаєш; AI визначає назву, дедлайн, пріоритет і сферу життя (робота / життя /
-            хобі / навчання) з того ж тексту. Змінити теги можна в «Редагувати» на картці. Підтеги згодом можна
-            дробити ієрархічно (наприклад, під «Робота» — 1-1, ідеї).
+          <p className="max-w-2xl text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            Одне поле — пиши як думаєш; AI визначає назву, дедлайн, пріоритет і сферу життя з того ж тексту.
+            Змінити теги можна в «Редагувати» на картці. Ієрархію тегів (підтеги під «Робота» тощо) налаштовуй у
+            розділі «Теги» в боковому меню.
           </p>
         </header>
 
         <section className="space-y-3">
           <div className="flex flex-col gap-3">
             <h2 className="text-sm font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              Задачі
+              Список
             </h2>
             <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
               <TaskStatusFilter
@@ -192,14 +196,14 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
           </div>
           {totalCount === 0 ? (
-            <p className="rounded-2xl border border-dashed border-zinc-200 px-4 py-10 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+            <p className="rounded-2xl border border-dashed border-zinc-200/90 bg-white/60 px-4 py-10 text-center text-sm text-zinc-500 shadow-sm dark:border-zinc-700/80 dark:bg-zinc-900/40 dark:text-zinc-400">
               Поки порожньо. Додай першу задачу нижче.
             </p>
           ) : tasks.length === 0 ? (
             statusFilter === "active" ? (
               <AllTasksDoneEmpty sortBy={sortBy} sortOrder={sortOrder} />
             ) : (
-              <p className="rounded-2xl border border-dashed border-zinc-200 px-4 py-10 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+              <p className="rounded-2xl border border-dashed border-zinc-200/90 bg-white/60 px-4 py-10 text-center text-sm text-zinc-500 shadow-sm dark:border-zinc-700/80 dark:bg-zinc-900/40 dark:text-zinc-400">
                 {statusFilter === "done"
                   ? "Ще немає виконаних задач."
                   : "Немає задач для цього фільтра."}
@@ -217,8 +221,9 @@ export default async function Home({ searchParams }: HomeProps) {
         </section>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200 bg-white/95 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/95 dark:shadow-[0_-8px_24px_rgba(0,0,0,0.35)]">
-        <div className="mx-auto w-full max-w-2xl px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      {/* `fixed` is viewport-relative: span only the main column on md+ so max-w-3xl centers like the task list (sidebar is w-56). */}
+      <div className="fixed inset-x-0 bottom-0 z-10 border-t border-zinc-200/90 bg-white/90 shadow-[0_-12px_40px_rgba(0,0,0,0.06)] backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90 dark:shadow-[0_-12px_40px_rgba(0,0,0,0.45)] md:left-56">
+        <div className="mx-auto w-full max-w-3xl px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <AddTaskForm />
         </div>
       </div>

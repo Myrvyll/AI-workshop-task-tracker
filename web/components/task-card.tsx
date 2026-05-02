@@ -1,6 +1,6 @@
 import { deleteTask, toggleTaskDone } from "@/app/actions";
-import type { Tag } from "@/app/generated/prisma/client";
 import { TaskEditBlock } from "@/components/task-edit-block";
+import type { TagForTaskPicker } from "@/lib/tag-tree";
 import type { TaskWithTags } from "@/lib/task-include";
 
 function priorityEmoji(priority: string) {
@@ -24,16 +24,16 @@ export function TaskCard({
   assignableTags,
 }: {
   task: TaskWithTags;
-  assignableTags: Pick<Tag, "id" | "name" | "slug">[];
+  assignableTags: TagForTaskPicker[];
 }) {
   const done = task.done;
 
   return (
     <article
-      className={`rounded-2xl border p-4 shadow-sm transition ${
+      className={`rounded-2xl border p-4 shadow-sm transition hover:ring-1 hover:ring-zinc-200/80 dark:hover:ring-zinc-700/80 ${
         done
-          ? "border-zinc-100 bg-zinc-50/80 opacity-80 dark:border-zinc-800 dark:bg-zinc-900/40"
-          : "border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900"
+          ? "border-zinc-100/90 bg-zinc-50/90 opacity-85 dark:border-zinc-800 dark:bg-zinc-900/50"
+          : "border-zinc-200/90 bg-white/95 dark:border-zinc-700/90 dark:bg-zinc-900/80"
       }`}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -53,7 +53,7 @@ export function TaskCard({
             <input type="hidden" name="id" value={task.id} />
             <button
               type="submit"
-              className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
+              className="rounded-lg border border-zinc-200/90 bg-white px-3 py-1.5 text-sm font-medium text-zinc-800 shadow-sm hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
             >
               {done ? "Повернути" : "Готово"}
             </button>

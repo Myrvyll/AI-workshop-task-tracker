@@ -59,7 +59,7 @@ export function TaskSortControls({
 
   return (
     <div
-      className={`flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center ${pending ? "opacity-70" : ""}`}
+      className={`flex flex-col gap-2 rounded-xl border border-zinc-200/90 bg-white/70 p-3 shadow-sm sm:flex-row sm:flex-wrap sm:items-end dark:border-zinc-700 dark:bg-zinc-900/50 ${pending ? "opacity-70" : ""}`}
       role="group"
       aria-label="Сортування списку задач"
     >
@@ -68,7 +68,7 @@ export function TaskSortControls({
           Сортувати за
         </span>
         <select
-          className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+          className="rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
           value={sortBy}
           title={sortByTitle}
           onChange={(e) => onSortByChange(e.target.value as TaskSortBy)}
@@ -85,7 +85,7 @@ export function TaskSortControls({
           Порядок
         </span>
         <select
-          className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-900 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+          className="rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none ring-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
           value={sortOrder}
           title={sortByTitle}
           onChange={(e) => onSortOrderChange(e.target.value as TaskSortOrder)}

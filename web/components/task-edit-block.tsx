@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateTask } from "@/app/actions";
-import type { Tag } from "@/app/generated/prisma/client";
 import { formatDeadline } from "@/lib/format-deadline";
 import type { TaskWithTags } from "@/lib/task-include";
+import type { TagForTaskPicker } from "@/lib/tag-tree";
 import { tagDisplayName } from "@/lib/tag-display";
 import { tagPillClass } from "@/lib/tag-styles";
 
@@ -66,7 +66,7 @@ export function TaskEditBlock({
 }: {
   task: TaskWithTags;
   done: boolean;
-  assignableTags: Pick<Tag, "id" | "name" | "slug">[];
+  assignableTags: TagForTaskPicker[];
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -228,16 +228,17 @@ export function TaskEditBlock({
         {assignableTags.length > 0 ? (
           <fieldset className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-3 dark:border-zinc-600 dark:bg-zinc-900/50">
             <legend className="px-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
-              Сфера
+              Теги
             </legend>
             <p className="mb-2 text-xs text-zinc-500 dark:text-zinc-500">
-              Підтеги (наприклад, під «Робота») з’являться тут після додавання в базу.
+              Кореневі сфери та підтеги (налаштовуються в «Теги») — відмічай потрібні.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-2">
               {assignableTags.map((tag) => (
                 <label
                   key={tag.id}
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-sm text-zinc-800 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
+                  style={{ paddingLeft: `${tag.depth * 0.75}rem` }}
+                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2.5 py-2 text-sm text-zinc-800 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
                 >
                   <input
                     type="checkbox"
@@ -245,9 +246,9 @@ export function TaskEditBlock({
                     value={tag.id}
                     defaultChecked={task.taskTags.some((tt) => tt.tagId === tag.id)}
                     disabled={pending}
-                    className="size-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-400 dark:border-zinc-500 dark:bg-zinc-900"
+                    className="size-4 shrink-0 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-400 dark:border-zinc-500 dark:bg-zinc-900"
                   />
-                  {tag.name}
+                  <span className="min-w-0">{tag.name}</span>
                 </label>
               ))}
             </div>
